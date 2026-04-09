@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widgets/UI/image_picker/image_picker_screen.dart';
-import 'package:flutter_widgets/UI/switch/switch_example.dart';
+import 'package:flutter_widgets/UI/favourite/favourite_screen.dart';
 import 'package:flutter_widgets/bloc/counter/counter_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widgets/bloc/favourite/favourite_bloc.dart';
 import 'package:flutter_widgets/bloc/imagepicker/imagepicker_bloc.dart';
 import 'package:flutter_widgets/bloc/switch/switch_bloc.dart';
+import 'package:flutter_widgets/bloc/todo/todo_bloc.dart';
+import 'package:flutter_widgets/repository/favourite_repository.dart';
 import 'package:flutter_widgets/utils/image_picker_utils.dart'; // 1. Import added
 
 void main() {
@@ -22,6 +24,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => CounterBloc()),
         BlocProvider(create: (_) => SwitchBloc()),
         BlocProvider(create: (_) => ImagepickerBloc(ImagePickerUtils())),
+        BlocProvider(create: (_) => TodoBloc()),
+        BlocProvider(create: (_) => FavouriteBloc(FavouriteRepository())),
       ],
 
       child: MaterialApp(
@@ -32,7 +36,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: ImagePickerScreen(),
+        home: FavouriteScreen(),
       ),
     );
   }
