@@ -26,13 +26,28 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Favourite App", style: TextStyle(fontSize: 22)),
+        actions: [
+          BlocBuilder<FavouriteBloc, FavouriteState>(
+            builder: (context, state) {
+              return Visibility(
+                visible: state.tempFavouriteItemList.isNotEmpty ? true : false,
+                child: IconButton(
+                  onPressed: () {
+                    context.read<FavouriteBloc>().add(DeleteEvent());
+                  },
+                  icon: Icon(Icons.delete, color: Colors.red),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: BlocBuilder<FavouriteBloc, FavouriteState>(
           builder: (context, state) {
             switch (state.listStatus) {
               case ListStatus.loading:
-                return CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               case ListStatus.failure:
                 return Text("Somethings went wrong");
               case ListStatus.success:
@@ -58,7 +73,20 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                             }
                           },
                         ),
-                        title: Text(item.value.toString()),
+                        title: Text(
+                          item.value.toString(),
+                          style: TextStyle(
+                            // Toggle between lineThrough and none based on selection
+                            decoration:
+                                state.tempFavouriteItemList.contains(item)
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            // Optional: Make the text slightly gray when crossed out
+                            color: state.tempFavouriteItemList.contains(item)
+                                ? Colors.grey
+                                : Colors.black,
+                          ),
+                        ),
                         trailing: IconButton(
                           onPressed: () {
                             FavouriteItemModel itemModel = FavouriteItemModel(
