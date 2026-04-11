@@ -32,63 +32,82 @@ class _PostScreenState extends State<PostScreen> {
               case PostStatus.failure:
                 return Text(state.message.toString());
               case PostStatus.success:
-                return ListView.builder(
-                  itemCount: state.postList?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final item = state.postList![index];
-                    return Card(
-                      elevation: 2, // Controls the shadow depth
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ), // Spacing between boxes
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          12,
-                        ), // Rounded corners
-                        side: BorderSide(
-                          color: Colors.grey.shade300,
-                          width: 1,
-                        ), // Optional border
+                final displayList = state.temPostList.isNotEmpty
+                    ? state.temPostList
+                    : (state.postList ?? []);
+                return Column(
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Search with email,id, body',
+                        border: OutlineInputBorder(),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(
-                          16.0,
-                        ), // Spacing inside the box
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Title (Email)
-                            Text(
-                              item.email.toString(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.blueAccent,
-                              ),
+                      onChanged: (search) {
+                        context.read<PostBloc>().add(SearchItem(search));
+                      },
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: displayList.length,
+                        itemBuilder: (context, index) {
+                          final item = displayList[index];
+                          return Card(
+                            elevation: 2, // Controls the shadow depth
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ), // Spacing between boxes
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                12,
+                              ), // Rounded corners
+                              side: BorderSide(
+                                color: Colors.grey.shade300,
+                                width: 1,
+                              ), // Optional border
                             ),
-                            const SizedBox(
-                              height: 8,
-                            ), // Gap between title and subtitle
-                            // Divider (Optional)
-                            Divider(color: Colors.grey.shade200),
-                            const SizedBox(height: 8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                16.0,
+                              ), // Spacing inside the box
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Title (Email)
+                                  Text(
+                                    item.email.toString(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.blueAccent,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ), // Gap between title and subtitle
+                                  // Divider (Optional)
+                                  Divider(color: Colors.grey.shade200),
+                                  const SizedBox(height: 8),
 
-                            // Subtitle (Body)
-                            Text(
-                              item.body.toString(),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade700,
-                                height: 1.4, // Improves readability
+                                  // Subtitle (Body)
+                                  Text(
+                                    item.body.toString(),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade700,
+                                      height: 1.4, // Improves readability
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 );
+
               default:
                 // This handles 'null' or any initial state before loading starts
                 return const Center(child: Text("Initializing..."));

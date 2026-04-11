@@ -25,9 +25,6 @@ class PostRepository {
         "3. Response received! Status: ${response.statusCode}",
       ); // Add this
       if (response.statusCode == 200) {
-        logger.t(
-          'Response Body: ${response.body}',
-        ); // .t (trace) is better for large data
         final body = json.decode(response.body) as List;
         return body.map((e) {
           return PostModel(
@@ -35,7 +32,7 @@ class PostRepository {
             id: e['id'],
             name: e['name'] as String,
             email: e['email'] as String,
-            body: e['body'],
+            body: e['body'] as String,
           );
         }).toList();
       }
